@@ -1,0 +1,2 @@
+# Classroom-Allocator
+This project develops an automated classroom allocation system that efficiently assigns classrooms to scheduling requests using graphs and queues. Classroom resources are modeled as a graph to analyze capacity, accessibility, and availability while avoiding conflicts such as overlapping schedules. A web-based interface provides real-time allocation results, conflict alerts, and activity logs using HTML, CSS, JavaScript, Python, and Java.
