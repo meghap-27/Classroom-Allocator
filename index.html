@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Classroom Allocation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🏫</span>
+                <span class="logo-text">SmartClass</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#dashboard" class="nav-link active" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#allocate" class="nav-link" data-section="allocate">Allocate Room</a></li>
+                <li><a href="#schedule" class="nav-link" data-section="schedule">Schedule</a></li>
+                <li><a href="#rooms" class="nav-link" data-section="rooms">Rooms</a></li>
+                <li><a href="#graph" class="nav-link" data-section="graph">Graph View</a></li>
+                <li><a href="#logs" class="nav-link" data-section="logs">Logs</a></li>
+            </ul>
+            <div class="status-indicator">
+                <span class="status-dot" id="connection-status"></span>
+                <span class="status-text">Connected</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p class="subtitle">Overview of classroom allocation system</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-content">
+                        <h3 id="total-rooms">0</h3>
+                        <p>Total Rooms</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <h3 id="total-bookings">0</h3>
+                        <p>Active Bookings</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <h3 id="utilization-rate">0%</h3>
+                        <p>Utilization Rate</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-content">
+                        <h3 id="conflicts-count">0</h3>
+                        <p>Conflicts Detected</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Recent Allocations</h3>
+                    <div id="recent-allocations" class="list-container">
+                        <p class="empty-state">No recent allocations</p>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>System Activity</h3>
+                    <div id="system-activity" class="activity-feed">
+                        <p class="empty-state">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Allocate Room Section -->
+        <section id="allocate" class="content-section">
+            <div class="section-header">
+                <h1>Allocate Classroom</h1>
+                <p class="subtitle">Request a classroom for your course</p>
+            </div>
+
+            <div class="form-container">
+                <form id="allocation-form" class="allocation-form">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="course-name">
+                                <span class="label-text">Course Name</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" id="course-name" name="course-name" 
+                                   placeholder="e.g., CS101 - Data Structures" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="instructor-name">
+                                <span class="label-text">Instructor Name</span>
+                            </label>
+                            <input type="text" id="instructor-name" name="instructor-name" 
+                                   placeholder="e.g., Dr. Smith">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">
+                                <span class="label-text">Date</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="start-time">
+                                <span class="label-text">Start Time</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="time" id="start-time" name="start-time" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="end-time">
+                                <span class="label-text">End Time</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="time" id="end-time" name="end-time" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="capacity">
+                                <span class="label-text">Student Capacity</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" id="capacity" name="capacity" 
+                                   min="1" max="500" placeholder="Number of students" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="building">
+                                <span class="label-text">Preferred Building</span>
+                            </label>
+                            <select id="building" name="building">
+                                <option value="">Any Building</option>
+                                <option value="Main">Main Building</option>
+                                <option value="Science">Science Block</option>
+                                <option value="Engineering">Engineering Wing</option>
+                                <option value="Arts">Arts Building</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="label-text">Required Facilities</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="projector" name="projector">
+                                    <span class="checkbox-text">📽️ Projector</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="lab" name="lab">
+                                    <span class="checkbox-text">💻 Computer Lab</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="accessible" name="accessible">
+                                    <span class="checkbox-text">♿ Wheelchair Accessible</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="whiteboard" name="whiteboard">
+                                    <span class="checkbox-text">📝 Whiteboard</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="audio" name="audio">
+                                    <span class="checkbox-text">🔊 Audio System</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="smartboard" name="smartboard">
+                                    <span class="checkbox-text">📱 Smart Board</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Find Available Room</span>
+                            <span class="btn-icon">🔍</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <span class="btn-text">Clear Form</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="allocation-result" class="result-container"></div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule" class="content-section">
+            <div class="section-header">
+                <h1>Schedule Overview</h1>
+                <p class="subtitle">View and manage all classroom bookings</p>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label for="filter-date">Filter by Date:</label>
+                    <input type="date" id="filter-date" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label for="filter-room">Filter by Room:</label>
+                    <select id="filter-room" class="filter-input">
+                        <option value="">All Rooms</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-building">Filter by Building:</label>
+                    <select id="filter-building" class="filter-input">
+                        <option value="">All Buildings</option>
+                        <option value="Main">Main Building</option>
+                        <option value="Science">Science Block</option>
+                        <option value="Engineering">Engineering Wing</option>
+                        <option value="Arts">Arts Building</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                <button class="btn btn-primary" onclick="loadSchedule()">Refresh</button>
+            </div>
+
+            <div id="schedule-container" class="schedule-grid"></div>
+        </section>
+
+        <!-- Rooms Section -->
+        <section id="rooms" class="content-section">
+            <div class="section-header">
+                <h1>Classroom Management</h1>
+                <p class="subtitle">Manage classroom inventory and facilities</p>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="showAddRoomModal()">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Add New Room</span>
+                </button>
+                <button class="btn btn-secondary" onclick="exportRooms()">
+                    <span class="btn-icon">📥</span>
+                    <span class="btn-text">Export Data</span>
+                </button>
+            </div>
+
+            <div id="rooms-container" class="rooms-grid"></div>
+        </section>
+
+        <!-- Graph View Section -->
+        <section id="graph" class="content-section">
+            <div class="section-header">
+                <h1>Graph Visualization</h1>
+                <p class="subtitle">Visual representation of classroom network and relationships</p>
+            </div>
+
+            <div class="graph-controls">
+                <button class="btn btn-secondary" onclick="regenerateGraph()">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Regenerate Graph</span>
+                </button>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="show-labels" checked onchange="toggleLabels()">
+                        <span>Show Labels</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="show-edges" checked onchange="toggleEdges()">
+                        <span>Show Connections</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="graph-container">
+                <canvas id="graph-canvas"></canvas>
+            </div>
+
+            <div class="graph-legend">
+                <h4>Legend</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4f46e5;"></div>
+                        <span>Main Building</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10b981;"></div>
+                        <span>Science Block</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f59e0b;"></div>
+                        <span>Engineering Wing</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ec4899;"></div>
+                        <span>Arts Building</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line solid"></div>
+                        <span>Same Building</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line dashed"></div>
+                        <span>Similar Capacity</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Logs Section -->
+        <section id="logs" class="content-section">
+            <div class="section-header">
+                <h1>System Logs</h1>
+                <p class="subtitle">Real-time activity and audit trail</p>
+            </div>
+
+            <div class="logs-controls">
+                <div class="filter-group">
+                    <label for="log-filter">Filter by Type:</label>
+                    <select id="log-filter" class="filter-input" onchange="filterLogs()">
+                        <option value="all">All Logs</option>
+                        <option value="success">Success</option>
+                        <option value="error">Errors</option>
+                        <option value="warning">Warnings</option>
+                        <option value="info">Info</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
+                <button class="btn btn-primary" onclick="loadLogs()">Refresh</button>
+                <button class="btn btn-secondary" onclick="exportLogs()">Export Logs</button>
+            </div>
+
+            <div id="logs-container" class="logs-terminal"></div>
+        </section>
+    </main>
+
+    <!-- Add Room Modal -->
+    <div id="add-room-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Classroom</h2>
+                <button class="modal-close" onclick="closeAddRoomModal()">&times;</button>
+            </div>
+            <form id="add-room-form" class="modal-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="room-number">Room Number *</label>
+                        <input type="text" id="room-number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="room-building">Building *</label>
+                        <select id="room-building" required>
+                            <option value="">Select Building</option>
+                            <option value="Main">Main Building</option>
+                            <option value="Science">Science Block</option>
+                            <option value="Engineering">Engineering Wing</option>
+                            <option value="Arts">Arts Building</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="room-capacity">Capacity *</label>
+                        <input type="number" id="room-capacity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="room-floor">Floor</label>
+                        <input type="number" id="room-floor" min="0" max="20">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Facilities</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-projector">
+                                <span>📽️ Projector</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-lab">
+                                <span>💻 Computer Lab</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-accessible">
+                                <span>♿ Accessible</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-whiteboard">
+                                <span>📝 Whiteboard</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-audio">
+                                <span>🔊 Audio System</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="room-smartboard">
+                                <span>📱 Smart Board</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Add Room</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddRoomModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+    <script src="graph.js"></script>
+</body>
+</html>
